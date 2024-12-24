@@ -5,7 +5,9 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Clone the GitHub repository
-                git url: 'https://github.com/SulaimanLmn/project-4-devops.git'
+                git url: 'https://github.com/SulaimanLmn/project-4-devops.git',
+                git branch: 'main'
+
             }
         }
         stage('Build Docker Image') {
