@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                // Clone the public GitHub repository with the specified branch
                 git branch: 'main', url: 'https://github.com/SulaimanLmn/project-4-devops.git'
             }
         }
@@ -12,8 +11,8 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    // Build the Docker image using the Dockerfile from the cloned repository
-                    sh 'docker build -t project-4-image .'
+                    // Use Windows Batch command to build the Docker image
+                    bat 'docker build -t project-4-image .'
                 }
             }
         }
@@ -22,12 +21,12 @@ pipeline {
                 script {
                     echo 'Stopping and removing any existing container...'
                     // Stop and remove any existing container with the same name
-                    sh 'docker stop project-4-container || true'
-                    sh 'docker rm project-4-container || true'
+                    bat 'docker stop project-4-container || exit 0'
+                    bat 'docker rm project-4-container || exit 0'
 
                     echo 'Running new container...'
                     // Run a new container from the built image
-                    sh 'docker run --rm -d --name project-4-container -p 8081:80 project-4-image'
+                    bat 'docker run --rm -d --name project-4-container -p 8081:80 project-4-image'
                 }
             }
         }
