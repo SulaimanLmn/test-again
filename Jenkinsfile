@@ -4,16 +4,15 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                // Clone the GitHub repository
-                git url: 'https://github.com/SulaimanLmn/project-4-devops.git',
-                git branch: 'main'
-
+                // Clone the public GitHub repository with the specified branch
+                git branch: 'branch-name', url: 'https://github.com/SulaimanLmn/project-4-devops.git'
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image using the Dockerfile from the cloned repo
+                    echo 'Building Docker image...'
+                    // Build the Docker image using the Dockerfile from the cloned repository
                     sh 'docker build -t project-4-image .'
                 }
             }
@@ -21,10 +20,12 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Stop and remove any previous container with the same name
+                    echo 'Stopping and removing any existing container...'
+                    // Stop and remove any existing container with the same name
                     sh 'docker stop project-4-container || true'
                     sh 'docker rm project-4-container || true'
 
+                    echo 'Running new container...'
                     // Run a new container from the built image
                     sh 'docker run --rm -d --name project-4-container -p 8081:80 project-4-image'
                 }
@@ -33,6 +34,9 @@ pipeline {
     }
 
     post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
         always {
             echo 'Pipeline completed!'
         }
