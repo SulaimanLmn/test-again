@@ -7,6 +7,15 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/SulaimanLmn/project-4-devops.git'
             }
         }
+        stage('Clean Up Docker') {
+            steps {
+                script {
+                    // Clean up unused images and containers
+                    echo 'Cleaning up unused Docker images and containers...'
+                    bat 'docker system prune -f'
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
@@ -24,7 +33,7 @@ pipeline {
                     bat 'docker rm project-4-container || exit 0'
 
                     echo 'Running new container...'
-                    bat 'docker run --rm -d --name project-4-container -p 8082:80 project-4-image'
+                    bat 'docker run -d --name project-4-container -p 8082:80 project-4-image'
                 }
             }
         }
