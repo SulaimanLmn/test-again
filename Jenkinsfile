@@ -5,7 +5,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Clone the public GitHub repository with the specified branch
-                git branch: 'branch-name', url: 'https://github.com/SulaimanLmn/project-4-devops.git'
+                git branch: 'main', url: 'https://github.com/SulaimanLmn/project-4-devops.git'
             }
         }
         stage('Build Docker Image') {
