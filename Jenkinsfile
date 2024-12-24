@@ -4,24 +4,15 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/SulaimanLmn/project-4-devops.git'
-            }
-        }
-        stage('Clean Up Docker') {
-            steps {
-                script {
-                    // Clean up unused images and containers
-                    echo 'Cleaning up unused Docker images and containers...'
-                    bat 'docker system prune -f'
-                }
+                git branch: 'main', url: 'https://github.com/SulaimanLmn/test-again.git'
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Force a fresh build to include all updates
-                    echo 'Building Docker image without caching...'
-                    bat 'docker build --no-cache -t project-4-image .'
+                    echo 'Building Docker image...'
+                    // Use Windows Batch command to build the Docker image
+                    bat 'docker build -t project-4-image .'
                 }
             }
         }
@@ -29,11 +20,13 @@ pipeline {
             steps {
                 script {
                     echo 'Stopping and removing any existing container...'
+                    // Stop and remove any existing container with the same name
                     bat 'docker stop project-4-container || exit 0'
                     bat 'docker rm project-4-container || exit 0'
 
                     echo 'Running new container...'
-                    bat 'docker run -d --name project-4-container -p 8082:80 project-4-image'
+                    // Run a new container from the built image
+                    bat 'docker run --rm -d --name project-4-container -p 8081:80 project-4-image'
                 }
             }
         }
