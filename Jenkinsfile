@@ -24,12 +24,28 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    echo 'Stopping and removing any existing container...'
+                    // Define a predictable port for each branch
+                    def branchPort
+                    switch (BRANCH_NAME) {
+                        case 'main':
+                            branchPort = 8081
+                            break
+                        case 'development':
+                            branchPort = 8082
+                            break
+                       
+                        default:
+                            branchPort = 4000  // Default port for unknown branches
+                    }
+
+                    echo "Stopping and removing any existing container for ${BRANCH_NAME}..."
                     bat "docker stop project-4-container-${BRANCH_NAME} || exit 0"
                     bat "docker rm project-4-container-${BRANCH_NAME} || exit 0"
 
-                    echo 'Running new container...'
-                    bat "docker run --rm -d --name project-4-container-${BRANCH_NAME} -p 8081:80 project-4-image-${BRANCH_NAME}"
+                    echo "Running new container for ${BRANCH_NAME} on port ${branchPort}..."
+                    bat "docker run --rm -d --name project-4-container-${BRANCH_NAME} -p ${branchPort}:80 project-4-image-${BRANCH_NAME}"
+
+                    echo "Container for ${BRANCH_NAME} is running on port ${branchPort}"
                 }
             }
         }
