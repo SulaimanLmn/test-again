@@ -24,7 +24,7 @@ pipeline {
                     bat 'docker rm project-4-container || exit 0'
 
                     echo 'Running new container...'
-                    bat 'docker run --rm -d --name project-4-container -p 8081:80 project-4-image'
+                    bat 'docker run --rm -d --name project-4-container -p 8082:80 project-4-image'
                 }
             }
         }
