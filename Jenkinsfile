@@ -6,8 +6,8 @@ pipeline {
             steps {
                 script {
                     echo "Cloning repository..."
-                    // Use the correct variable for the branch name
-                    git branch: "${env.BRANCH_NAME}", url: 'https://github.com/SulaimanLmn/test-again.git'
+                    // Clone the branch based on which one is being built
+                    git branch: "${BRANCH_NAME}", url: 'https://github.com/SulaimanLmn/test-again.git'
                 }
             }
         }
@@ -15,8 +15,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    echo "Building Docker image for ${env.BRANCH_NAME} branch..."
-                    bat "docker build -t project-4-image-${env.BRANCH_NAME} ."
+                    echo "Building Docker image for ${BRANCH_NAME} branch..."
+                    bat "docker build -t project-4-image-${BRANCH_NAME} ."
                 }
             }
         }
@@ -26,25 +26,26 @@ pipeline {
                 script {
                     // Define a predictable port for each branch
                     def branchPort
-                    switch (env.BRANCH_NAME) {
+                    switch (BRANCH_NAME) {
                         case 'main':
                             branchPort = 8081
                             break
                         case 'development':
                             branchPort = 8082
                             break
+                       
                         default:
-                            branchPort = 4000 // Default port for unknown branches
+                            branchPort = 4000  // Default port for unknown branches
                     }
 
-                    echo "Stopping and removing any existing container for ${env.BRANCH_NAME}..."
-                    bat "docker stop project-4-container-${env.BRANCH_NAME} || exit 0"
-                    bat "docker rm project-4-container-${env.BRANCH_NAME} || exit 0"
+                    echo "Stopping and removing any existing container for ${BRANCH_NAME}..."
+                    bat "docker stop project-4-container-${BRANCH_NAME} || exit 0"
+                    bat "docker rm project-4-container-${BRANCH_NAME} || exit 0"
 
-                    echo "Running new container for ${env.BRANCH_NAME} on port ${branchPort}..."
-                    bat "docker run --rm -d --name project-4-container-${env.BRANCH_NAME} -p ${branchPort}:80 project-4-image-${env.BRANCH_NAME}"
+                    echo "Running new container for ${BRANCH_NAME} on port ${branchPort}..."
+                    bat "docker run --rm -d --name project-4-container-${BRANCH_NAME} -p ${branchPort}:80 project-4-image-${BRANCH_NAME}"
 
-                    echo "Container for ${env.BRANCH_NAME} is running on port ${branchPort}"
+                    echo "Container for ${BRANCH_NAME} is running on port ${branchPort}"
                 }
             }
         }
